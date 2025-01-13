@@ -1,0 +1,31 @@
+{
+	"name": "personal-api",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"scripts": {
+		"start": "node dist/index.js",
+		"build": "npx tsc --build tsconfig.json",
+		"dev": "nodemon --exec ts-node src/index.ts"
+	},
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"@google-cloud/firestore": "^7.11.0",
+		"@google-cloud/storage": "^7.15.0",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"helmet": "^8.0.0",
+		"multer": "^1.4.5-lts.1",
+		"uuid": "^11.0.5"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.17",
+		"@types/express": "^5.0.0",
+		"@types/multer": "^1.4.12",
+		"ts-node": "^10.9.2",
+		"tslib": "^2.8.1",
+		"typescript": "^5.7.3"
+	}
+}
