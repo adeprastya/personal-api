@@ -5,6 +5,8 @@ import { generateId, timestampToReadable } from "../utils/helper";
 import { successResponse } from "../utils/response";
 import { storeImage } from "../services/cloudStorage";
 import { ErrorResponse } from "../utils/ErrorResponse";
+import { CreateProjectSchema, ImageFileSchema, UpdateProjectSchema, IdSchema } from "../validations/ProjectSchema";
+import { validate } from "../validations/validate";
 
 export const getAllProjects = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -23,35 +25,27 @@ export const getAllProjects = async (req: Request, res: Response, next: NextFunc
 
 export const createProject = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		// const { title, description, technologies, site_url, source_code_url, demo_url } = req.body;
-		const reqBody = req.body;
+		let reqBody = req.body.data;
+		const reqFile = req.file;
 
-		// ------- Validate req
-		if (!req.file) {
-			throw new ErrorResponse(400, "Image file is required");
-		}
-		if (!reqBody.title || !reqBody.description || !reqBody.technologies) {
-			throw new ErrorResponse(400, "Missing required fields");
-		}
-		let parsedTechnologies;
 		try {
-			parsedTechnologies = JSON.parse(reqBody.technologies);
-		} catch (error) {
-			throw new ErrorResponse(400, "Technologies must be a valid JSON array");
+			reqBody = JSON.parse(reqBody);
+		} catch (err) {
+			throw new ErrorResponse(400, "Data must be a valid JSON object");
 		}
-		// -------------------------
+
+		validate(CreateProjectSchema, reqBody);
+		validate(ImageFileSchema, reqFile);
 
 		const id = generateId();
-		const image_url = await storeImage(id, req.file);
+		const image_url = await storeImage(id, reqFile as Express.Multer.File);
 
 		const data: ProjectInterface = {
 			...reqBody,
 			id,
-			technologies: parsedTechnologies,
 			image_url,
 			created_at: new Date().toISOString()
 		};
-
 		await ProjectCollection.create(data);
 
 		successResponse(res, 201, "Project created successfully");
@@ -65,18 +59,8 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
 		const { id } = req.params;
 		const reqBody = req.body;
 
-		// ------- Validate req
-		if (!id) {
-			throw new ErrorResponse(400, "Project ID is required");
-		}
-		if (reqBody.technologies) {
-			try {
-				reqBody.technologies = JSON.parse(reqBody.technologies);
-			} catch (error) {
-				throw new ErrorResponse(400, "Technologies must be a valid JSON array");
-			}
-		}
-		// -------------------------
+		validate(IdSchema, id);
+		validate(UpdateProjectSchema, reqBody);
 
 		const data: Partial<ProjectInterface> = {
 			...reqBody
@@ -94,11 +78,7 @@ export const deleteProject = async (req: Request, res: Response, next: NextFunct
 	try {
 		const { id } = req.params;
 
-		// ------- Validate req
-		if (!id || typeof id !== "string") {
-			throw new ErrorResponse(400, "Project ID is required");
-		}
-		// -------------------------
+		validate(IdSchema, id);
 
 		await ProjectCollection.delete(id);
 

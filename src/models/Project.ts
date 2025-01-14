@@ -4,7 +4,7 @@ export interface ProjectInterface {
 	id: string;
 	title: string;
 	description: string;
-	technologies: string[];
+	technologies: Array<string>;
 	site_url?: String | null;
 	source_code_url?: String | null;
 	demo_url?: String | null;

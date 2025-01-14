@@ -1,22 +1,17 @@
 import type { Response } from "express";
 
-interface ApiResponse {
-	success: boolean;
-	message: string;
-	data?: unknown | null;
-}
-
 export const errorResponse = (
 	res: Response,
 	statusCode: number = 500,
 	message: string = "An error occurred"
 ): Response => {
-	const response: ApiResponse = {
-		success: false,
-		message
-	};
-
-	return res.status(statusCode).json(response).end();
+	return res
+		.status(statusCode)
+		.json({
+			success: false,
+			message
+		})
+		.end();
 };
 
 export const successResponse = <T>(
@@ -25,11 +20,16 @@ export const successResponse = <T>(
 	message: string = "Processed successfully",
 	data: T | null = null
 ): Response => {
-	const response: ApiResponse = {
-		success: true,
-		message,
-		data
-	};
+	if (data === null) {
+		return res.status(statusCode).json({ success: true, message }).end();
+	}
 
-	return res.status(statusCode).json(response).end();
+	return res
+		.status(statusCode)
+		.json({
+			success: true,
+			message,
+			data
+		})
+		.end();
 };
