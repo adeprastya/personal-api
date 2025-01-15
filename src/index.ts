@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import router from "./routes/index";
-import errorMiddleware from "./middlewares/errorMiddlewares";
+import errorMiddleware from "./middlewares/error.middleware";
 
 const app = express();
 

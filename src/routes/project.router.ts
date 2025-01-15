@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
-import { getAllProjects, createProject, updateProject, deleteProject } from "../controllers/project";
+import { getAllProjects, createProject, updateProject, deleteProject } from "../controllers/project.controller";
 
 const upload = multer();
 const router = Router();

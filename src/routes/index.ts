@@ -1,6 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
-import projectRouter from "./project";
+import authRouter from "./auth.router";
+import projectRouter from "./project.router";
 import { successResponse } from "../utils/response";
 
 const router = express.Router();
@@ -10,5 +11,6 @@ router.get("/", (req: Request, res: Response): any =>
 );
 
 router.use("/projects", projectRouter);
+router.use("/auth", authRouter);
 
 export default router;

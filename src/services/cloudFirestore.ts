@@ -16,7 +16,6 @@ const deleteCollectionRecursive = async (collectionPath: string): Promise<void> 
 
 			await docRef.delete();
 		} catch (error) {
-			console.error(`Error deleting document ${docRef.path}:`, error);
 			throw new ErrorResponse(500, `Error deleting document ${docRef.path}`);
 		}
 	};
@@ -27,7 +26,6 @@ const deleteCollectionRecursive = async (collectionPath: string): Promise<void> 
 
 		await Promise.all(docs.map((doc) => deleteRecursive(doc)));
 	} catch (error) {
-		console.error(`Error deleting collection ${collectionPath}:`, error);
 		throw new ErrorResponse(500, `Error deleting collection ${collectionPath}`);
 	}
 };
@@ -54,7 +52,6 @@ class FirestoreCollection<T extends { id: string }> {
 			await this.#collection.doc(data.id).set(data);
 			return data.id;
 		} catch (err) {
-			console.error("__Error creating document:", err);
 			throw new ErrorResponse(500, "Failed creating document");
 		}
 	}
@@ -64,7 +61,6 @@ class FirestoreCollection<T extends { id: string }> {
 			await this.#collection.doc(id).update(data);
 			return id;
 		} catch (err) {
-			console.error("__Error updating document:", err);
 			throw new ErrorResponse(500, `Failed updating document with ID: ${id}`);
 		}
 	}
@@ -74,7 +70,6 @@ class FirestoreCollection<T extends { id: string }> {
 			await this.#collection.doc(id).delete();
 			return id;
 		} catch (err) {
-			console.error("__Error deleting document:", err);
 			throw new ErrorResponse(500, `Failed deleting document with ID: ${id}`);
 		}
 	}
@@ -84,7 +79,6 @@ class FirestoreCollection<T extends { id: string }> {
 			const snapshot = await this.#collection.get();
 			return snapshot.docs.map((doc) => doc.data());
 		} catch (err) {
-			console.error("__Error getting all documents:", err);
 			throw new ErrorResponse(500, "Failed getting all documents");
 		}
 	}
@@ -99,7 +93,6 @@ class FirestoreCollection<T extends { id: string }> {
 			const firstDoc = snapshot.docs[0];
 			return firstDoc?.data() ?? null;
 		} catch (err) {
-			console.error("__Error finding document by field:", err);
 			throw new ErrorResponse(500, `Failed finding document by field ${String(field)}`);
 		}
 	}

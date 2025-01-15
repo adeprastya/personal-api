@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import type { ProjectInterface } from "../models/Project";
-import ProjectCollection from "../models/Project";
+import type { ProjectInterface } from "../models/project.model";
+import ProjectCollection from "../models/project.model";
 import { generateId, timestampToReadable } from "../utils/helper";
 import { successResponse } from "../utils/response";
 import { storeImage } from "../services/cloudStorage";
