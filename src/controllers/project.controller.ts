@@ -3,7 +3,7 @@ import type { ProjectInterface } from "../models/project.model";
 import ProjectCollection from "../models/project.model";
 import { generateId, timestampToReadable } from "../utils/helper";
 import { successResponse } from "../utils/response";
-import { storeImage } from "../services/cloudStorage";
+import { storeImage, deleteImage } from "../services/cloudStorage";
 import { ErrorResponse } from "../utils/ErrorResponse";
 import { CreateProjectSchema, ImageFileSchema, UpdateProjectSchema, IdSchema } from "../validations/ProjectSchema";
 import { validate } from "../validations/validate";
@@ -80,7 +80,13 @@ export const deleteProject = async (req: Request, res: Response, next: NextFunct
 
 		validate(IdSchema, id);
 
-		await ProjectCollection.delete(id);
+		deleteImage(id);
+
+		const isDeleted = await ProjectCollection.delete(id);
+
+		if (!isDeleted) {
+			throw new ErrorResponse(500, "Failed deleting project");
+		}
 
 		successResponse(res, 200, "Project deleted successfully");
 	} catch (err) {

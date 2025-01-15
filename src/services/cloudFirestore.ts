@@ -30,7 +30,7 @@ const deleteCollectionRecursive = async (collectionPath: string): Promise<void> 
 	}
 };
 
-class FirestoreCollection<T extends { id: string }> {
+export class FirestoreCollection<T extends { id: string }> {
 	readonly #collection: FirebaseFirestore.CollectionReference<T>;
 
 	constructor(collectionRef: string | FirestoreCollection<T>) {
@@ -45,33 +45,6 @@ class FirestoreCollection<T extends { id: string }> {
 
 	ref(): FirebaseFirestore.CollectionReference<T> {
 		return this.#collection;
-	}
-
-	async create(data: T): Promise<string> {
-		try {
-			await this.#collection.doc(data.id).set(data);
-			return data.id;
-		} catch (err) {
-			throw new ErrorResponse(500, "Failed creating document");
-		}
-	}
-
-	async update(id: string, data: Partial<T>): Promise<string> {
-		try {
-			await this.#collection.doc(id).update(data);
-			return id;
-		} catch (err) {
-			throw new ErrorResponse(500, `Failed updating document with ID: ${id}`);
-		}
-	}
-
-	async delete(id: string): Promise<string> {
-		try {
-			await this.#collection.doc(id).delete();
-			return id;
-		} catch (err) {
-			throw new ErrorResponse(500, `Failed deleting document with ID: ${id}`);
-		}
 	}
 
 	async findAll(): Promise<T[]> {
@@ -93,9 +66,43 @@ class FirestoreCollection<T extends { id: string }> {
 			const firstDoc = snapshot.docs[0];
 			return firstDoc?.data() ?? null;
 		} catch (err) {
-			throw new ErrorResponse(500, `Failed finding document by field ${String(field)}`);
+			throw new ErrorResponse(500, `Failed finding document`);
+		}
+	}
+
+	async create(data: T): Promise<string> {
+		try {
+			await this.#collection.doc(data.id).set(data);
+			return data.id;
+		} catch (err) {
+			throw new ErrorResponse(500, "Failed creating document");
+		}
+	}
+
+	async update(id: string, data: Partial<T>): Promise<string> {
+		try {
+			await this.#collection.doc(id).update(data);
+			return id;
+		} catch (err) {
+			throw new ErrorResponse(500, `Failed updating document`);
+		}
+	}
+
+	async delete(id: string): Promise<boolean> {
+		try {
+			const docRef = this.#collection.doc(id);
+			const doc = await docRef.get();
+
+			if (!doc.exists) {
+				throw new ErrorResponse(404, `Document does not exist`);
+			}
+
+			await docRef.delete();
+			const deletedDoc = await docRef.get();
+
+			return !deletedDoc.exists;
+		} catch (err: any) {
+			throw new ErrorResponse(err.statusCode || 500, err.message || `Failed to delete document`);
 		}
 	}
 }
-
-export { FirestoreCollection };

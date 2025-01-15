@@ -8,9 +8,9 @@ const storage = new Storage({
 });
 const bucket = storage.bucket(GCP_bucketName);
 
-const allowedMimeTypes = ["image/png", "image/jpeg", "image/jpg"];
+const allowedMimeTypes = ["image/png"];
 
-const storeImage = async (id: string, image: Express.Multer.File): Promise<string> => {
+export const storeImage = async (id: string, image: Express.Multer.File): Promise<string> => {
 	try {
 		if (!allowedMimeTypes.includes(image.mimetype)) {
 			throw new ErrorResponse(400, `Unsupported image type: ${image.mimetype}`);
@@ -29,9 +29,16 @@ const storeImage = async (id: string, image: Express.Multer.File): Promise<strin
 		const imageUrl = `https://storage.googleapis.com/${GCP_bucketName}/${fileName}`;
 		return imageUrl;
 	} catch (err: any) {
-		console.error("__Error storing image in GCS:", err);
 		throw new ErrorResponse(err.statusCode, err.message);
 	}
 };
 
-export { storeImage };
+export const deleteImage = async (id: string) => {
+	try {
+		const file = bucket.file(`projects/${id}.png`);
+
+		await file.delete();
+	} catch (err: any) {
+		throw new ErrorResponse(err.statusCode, err.message);
+	}
+};

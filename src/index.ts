@@ -19,7 +19,7 @@ app.use(
 app.use(helmet());
 app.use(express.json());
 
-app.use("/", router);
+app.use("/api", router);
 
 app.use(errorMiddleware);
 
