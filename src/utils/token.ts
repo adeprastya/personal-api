@@ -7,21 +7,21 @@ if (!JWT_SECRET_KEY) {
 }
 
 export const generateToken = (data: any) => {
-	const token = jwt.sign(data, JWT_SECRET_KEY, { algorithm: "HS256", expiresIn: "1d" });
+	try {
+		const token = jwt.sign(data, JWT_SECRET_KEY, { algorithm: "HS256", expiresIn: "1d" });
 
-	if (!token) {
+		return token;
+	} catch (err) {
 		throw new ErrorResponse(500, "Failed generating token");
 	}
-
-	return token;
 };
 
 export const decodeToken = (token: string) => {
-	const result = jwt.verify(token, JWT_SECRET_KEY);
+	try {
+		const payload = jwt.verify(token, JWT_SECRET_KEY);
 
-	if (!result) {
-		throw new ErrorResponse(401, "Invalid token");
+		return payload;
+	} catch (err) {
+		throw new ErrorResponse(401, "Invalid or expired token");
 	}
-
-	return result;
 };

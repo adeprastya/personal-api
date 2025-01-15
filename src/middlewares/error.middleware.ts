@@ -8,7 +8,7 @@ const errorMiddleware = (err: ErrorResponse | Error, req: Request, res: Response
 	if (err instanceof ErrorResponse) {
 		errorResponse(res, err.statusCode, err.message);
 	} else {
-		errorResponse(res, 500, "Internal Server Error");
+		errorResponse(res, 500, err.message);
 	}
 };
 
