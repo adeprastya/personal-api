@@ -24,4 +24,4 @@ app.use("/api", router);
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`\nServer running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`\nServer running on http://localhost:${PORT}/api`));
