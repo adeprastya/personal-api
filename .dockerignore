@@ -6,3 +6,4 @@ dist/
 .vscode/
 
 docker-compose.yml
+_docs/
