@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    image: personal-api:1.0
+    container_name: personal-api
+    env_file:
+      - .env
+    volumes:
+      - ${SERVICE_ACCOUNT_PATH}:/app/${SERVICE_ACCOUNT_FILENAME}
+    ports:
+      - "3000:3000"
+# docker-compose up --build
