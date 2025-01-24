@@ -1,10 +1,10 @@
 import { Firestore } from "@google-cloud/firestore";
-import { GCP_projectId, GCP_serviceAccountPath } from "../config/GCP";
+import { GCP_projectId, GCP_serviceAccountCredentials } from "../config/GCP";
 import { ErrorResponse } from "../utils/ErrorResponse";
 
 const firestore = new Firestore({
 	projectId: GCP_projectId,
-	keyFilename: GCP_serviceAccountPath
+	credentials: GCP_serviceAccountCredentials
 });
 
 const deleteCollectionRecursive = async (collectionPath: string): Promise<void> => {

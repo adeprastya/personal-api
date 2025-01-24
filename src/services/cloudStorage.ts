@@ -1,10 +1,10 @@
 import { Storage } from "@google-cloud/storage";
-import { GCP_projectId, GCP_serviceAccountPath, GCP_bucketName } from "../config/GCP";
+import { GCP_projectId, GCP_bucketName, GCP_serviceAccountCredentials } from "../config/GCP";
 import { ErrorResponse } from "../utils/ErrorResponse";
 
 const storage = new Storage({
 	projectId: GCP_projectId,
-	keyFilename: GCP_serviceAccountPath
+	credentials: GCP_serviceAccountCredentials
 });
 const bucket = storage.bucket(GCP_bucketName);
 
