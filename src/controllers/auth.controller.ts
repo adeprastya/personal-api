@@ -3,9 +3,13 @@ import type { UserInterface } from "../models/user.model";
 import { oAuthUrl, oAuth2Client } from "../config/GOAuth";
 import { google } from "googleapis";
 import { ErrorResponse } from "../utils/ErrorResponse";
-import { successResponse } from "../utils/response";
 import UserCollection from "../models/user.model";
 import { generateToken } from "../utils/token";
+
+const FE_URL = process.env.FE_URL;
+if (!FE_URL) {
+	throw new Error("Environment variable FE_URL is not defined");
+}
 
 export const login = (req: Request, res: Response) => {
 	res.redirect(oAuthUrl);
@@ -35,8 +39,8 @@ export const loginCallback = async (req: Request, res: Response, next: NextFunct
 
 		const token = generateToken(user);
 
-		successResponse(res, 200, "Login successful", { token });
+		res.redirect(FE_URL + `?success=true&message=Login successful&token=${token}`);
 	} catch (err) {
-		next(err);
+		res.redirect(FE_URL + `?success=false&message=${(err as ErrorResponse).message}`);
 	}
 };

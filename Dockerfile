@@ -13,5 +13,5 @@ RUN npm install --only=production
 EXPOSE ${PORT}
 CMD ["npm", "start"]
 
-# docker build --tag personal-api:latest .
-# docker run -d --name personal-api --env-file .env --publish 3000:3000 personal-api:latest
+# docker build --tag local-personal-api:latest .
+# docker run -d --name personal-api --env-file .env --publish 3000:3000 local-personal-api:latest

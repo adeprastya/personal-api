@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    image: personal-api:latest
+    image: local-personal-api:latest
     container_name: personal-api
     env_file:
       - .env
